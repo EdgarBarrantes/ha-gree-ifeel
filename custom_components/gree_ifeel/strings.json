@@ -1,0 +1,158 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "This emitter already sends I Feel reports.",
+      "no_infrared_emitters": "No infrared emitter found. Set one up first (Broadlink, ESPHome, Shelly, ZHA or MQTT).",
+      "reconfigure_successful": "Saved."
+    },
+    "step": {
+      "user": {
+        "title": "Send I Feel reports",
+        "description": "Pick the infrared emitter that faces the air conditioner's receiver and the thermometer whose readings it should steer by.",
+        "data": {
+          "infrared_emitter_entity_id": "Infrared emitter",
+          "temperature_sensor_entity_id": "Room temperature sensor",
+          "climate_entity_id": "Air conditioner (optional)"
+        },
+        "data_description": {
+          "infrared_emitter_entity_id": "Must be in line of sight of the indoor unit's receiver.",
+          "temperature_sensor_entity_id": "Reported in whole degrees Celsius, as the remote does.",
+          "climate_entity_id": "The unit's climate entity (Gree Wi-Fi or Gree Infrared). With the Wi-Fi one the reports can be checked: its room temperature becomes the reported one. Its mode, set point and fan speed also go into the re-arm press."
+        }
+      },
+      "reconfigure": {
+        "title": "Change entities",
+        "data": {
+          "infrared_emitter_entity_id": "Infrared emitter",
+          "temperature_sensor_entity_id": "Room temperature sensor",
+          "climate_entity_id": "Air conditioner (optional)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "I Feel options",
+        "sections": {
+          "reports": {
+            "name": "Reports",
+            "data": {
+              "interval": "Report every",
+              "offset": "Offset",
+              "send_on_change": "Also send when the reading changes",
+              "only_when_on": "Only while the unit is on"
+            },
+            "data_description": {
+              "interval": "The remote reports every few minutes; the unit drops I Feel if it hears nothing for a while.",
+              "offset": "Added to the sensor's reading before rounding.",
+              "only_when_on": "Needs the air conditioner entity."
+            }
+          },
+          "checking": {
+            "name": "Checking and re-arming",
+            "data": {
+              "verify": "Check the unit follows",
+              "misses_before_action": "Missed reports before acting",
+              "auto_rearm": "Re-arm automatically",
+              "rearm_every_hours": "Re-arm every (when it can't be checked)",
+              "quiet_start": "No re-arm beeps from",
+              "quiet_end": "No re-arm beeps until"
+            },
+            "data_description": {
+              "verify": "Compares the climate entity's room temperature with the last report.",
+              "auto_rearm": "Sends a remote press with I Feel on. The unit beeps once. Off: a repair issue tells you instead.",
+              "rearm_every_hours": "For units without Wi-Fi feedback. 0 = never."
+            }
+          },
+          "press": {
+            "name": "Re-arm press",
+            "description": "A press carries the unit's whole state. Mode and set point come from the climate entity; set the rest to what the unit has, or the press changes it.",
+            "data": {
+              "rearm_fan": "Fan speed",
+              "rearm_vertical": "Vertical flap",
+              "rearm_light": "Display light",
+              "rearm_health": "Health (ionizer)",
+              "fallback_mode": "Mode without a climate entity",
+              "fallback_set_point": "Set point without a climate entity"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "fan": {
+      "options": {
+        "climate": "From the climate entity",
+        "auto": "Auto",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      }
+    },
+    "vertical": {
+      "options": {
+        "last": "Leave as it is",
+        "swing": "Swing",
+        "highest": "Highest",
+        "high": "High",
+        "middle": "Middle",
+        "low": "Low",
+        "lowest": "Lowest"
+      }
+    },
+    "mode": {
+      "options": {
+        "heat": "Heat",
+        "cool": "Cool",
+        "dry": "Dry",
+        "fan_only": "Fan only",
+        "auto": "Auto"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "following": {
+        "name": "Following reports"
+      }
+    },
+    "button": {
+      "send_report": {
+        "name": "Send report"
+      },
+      "rearm": {
+        "name": "Re-arm I Feel"
+      }
+    },
+    "sensor": {
+      "reported": {
+        "name": "Reported temperature"
+      },
+      "unit_reading": {
+        "name": "Unit's room temperature"
+      },
+      "misses": {
+        "name": "Missed reports"
+      },
+      "last_report": {
+        "name": "Last report"
+      },
+      "last_rearm": {
+        "name": "Last re-arm"
+      }
+    },
+    "switch": {
+      "reporting": {
+        "name": "Reporting"
+      }
+    }
+  },
+  "issues": {
+    "not_following": {
+      "title": "{title}: the air conditioner ignores I Feel reports",
+      "description": "The last {misses} reports weren't taken up ({rearms} re-arm presses sent). Check that the infrared emitter still faces the unit's receiver, then press Re-arm I Feel. This clears once the unit follows again."
+    }
+  }
+}
